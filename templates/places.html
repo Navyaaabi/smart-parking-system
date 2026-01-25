@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Select Location | Smart Parking</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="font-[Poppins] bg-gradient-to-br from-blue-50 to-gray-100 min-h-screen">
+
+<!-- HEADER -->
+<header class="bg-blue-600 text-white py-4 shadow">
+  <div class="max-w-7xl mx-auto px-4 flex items-center">
+    <a href="{{ url_for('home') }}" class="font-semibold hover:opacity-80">
+      ← Back
+    </a>
+    <h1 class="mx-auto text-2xl font-bold">Choose a Location</h1>
+  </div>
+</header>
+
+<!-- TOAST MESSAGE -->
+<div id="toast"
+     class="fixed top-6 right-6 bg-black/80 text-white px-4 py-2 rounded-xl hidden z-50">
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="max-w-7xl mx-auto px-4 py-10 space-y-14">
+
+  <!-- MALLS -->
+  <section>
+    <h2 class="text-2xl font-bold mb-6">🏬 Malls</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- Prozone -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition relative">
+        <img src="{{ url_for('static', filename='images/prozone.jpg') }}"
+             class="w-full h-48 object-cover">
+
+        <button onclick="togglePin(this,'Prozone Mall')"
+                class="absolute top-3 right-3 bg-black/70 text-white rounded-full px-3 py-1 hover:bg-red-600 transition">
+          📌
+        </button>
+
+        <h3 class="text-lg font-bold mt-3 px-4">Prozone Mall</h3>
+        <p class="text-gray-600 px-4">Ramakrishna Mill</p>
+
+        <a href="{{ url_for('prozone') }}">
+          <button class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl font-bold hover:bg-blue-700 transition">
+            Book Now
+          </button>
+        </a>
+      </div>
+
+      <!-- Brookfields -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition relative">
+        <img src="{{ url_for('static', filename='images/brookfields.webp') }}"
+             class="w-full h-48 object-cover">
+
+        <button onclick="togglePin(this,'Brookfields Mall')"
+                class="absolute top-3 right-3 bg-black/70 text-white rounded-full px-3 py-1 hover:bg-red-600 transition">
+          📌
+        </button>
+
+        <h3 class="text-lg font-bold mt-3 px-4">Brookfields Mall</h3>
+        <p class="text-gray-600 px-4">RS Puram</p>
+
+        <a href="{{ url_for('brookfields') }}">
+          <button class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl font-bold hover:bg-blue-700 transition">
+            Book Now
+          </button>
+        </a>
+      </div>
+
+      <!-- Fun Republic -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition relative">
+        <img src="{{ url_for('static', filename='images/fun.webp') }}"
+             class="w-full h-48 object-cover">
+
+        <button onclick="togglePin(this,'Fun Republic Mall')"
+                class="absolute top-3 right-3 bg-black/70 text-white rounded-full px-3 py-1 hover:bg-red-600 transition">
+          📌
+        </button>
+
+        <h3 class="text-lg font-bold mt-3 px-4">Fun Republic Mall</h3>
+        <p class="text-gray-600 px-4">Peelamedu</p>
+
+        <a href="{{ url_for('fun') }}">
+          <button class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl font-bold hover:bg-blue-700 transition">
+            Book Now
+          </button>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- HOSPITALS -->
+  <section>
+    <h2 class="text-2xl font-bold mb-6">🏥 Hospitals</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+      <!-- KG -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition relative">
+        <img src="{{ url_for('static', filename='images/kg.avif') }}"
+             class="w-full h-48 object-cover">
+
+        <button onclick="togglePin(this,'KG Hospital')"
+                class="absolute top-3 right-3 bg-black/70 text-white rounded-full px-3 py-1 hover:bg-red-600 transition">
+          📌
+        </button>
+
+        <h3 class="text-lg font-bold mt-3 px-4">KG Hospital</h3>
+        <p class="text-gray-600 px-4">Ramakrishna Mill</p>
+
+        <a href="{{ url_for('kg') }}">
+          <button class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl font-bold hover:bg-blue-700 transition">
+            Book Now
+          </button>
+        </a>
+      </div>
+
+      <!-- KMCH -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition relative">
+        <img src="{{ url_for('static', filename='images/kmch.jpg') }}"
+             class="w-full h-48 object-cover">
+
+        <button onclick="togglePin(this,'KMCH Hospital')"
+                class="absolute top-3 right-3 bg-black/70 text-white rounded-full px-3 py-1 hover:bg-red-600 transition">
+          📌
+        </button>
+
+        <h3 class="text-lg font-bold mt-3 px-4">KMCH Hospital</h3>
+        <p class="text-gray-600 px-4">Sitra</p>
+
+        <a href="{{ url_for('kmch') }}">
+          <button class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl font-bold hover:bg-blue-700 transition">
+            Book Now
+          </button>
+        </a>
+      </div>
+
+      <!-- PSG -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:scale-105 transition relative">
+        <img src="{{ url_for('static', filename='images/psg.jpg') }}"
+             class="w-full h-48 object-cover">
+
+        <button onclick="togglePin(this,'PSG Hospital')"
+                class="absolute top-3 right-3 bg-black/70 text-white rounded-full px-3 py-1 hover:bg-red-600 transition">
+          📌
+        </button>
+
+        <h3 class="text-lg font-bold mt-3 px-4">PSG Hospital</h3>
+        <p class="text-gray-600 px-4">Peelamedu</p>
+
+        <a href="{{ url_for('psg') }}">
+          <button class="w-full bg-blue-600 text-white py-3 mt-4 rounded-xl font-bold hover:bg-blue-700 transition">
+            Book Now
+          </button>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-blue-600 text-white text-center py-4">
+  © 2026 Smart Parking System
+</footer>
+
+<!-- JAVASCRIPT (DOM FEATURES) -->
+<script>
+  let pinnedBtn = null;
+
+  function togglePin(btn, name) {
+    if (pinnedBtn && pinnedBtn !== btn) {
+      pinnedBtn.classList.remove("bg-red-600");
+    }
+
+    if (btn.classList.contains("bg-red-600")) {
+      btn.classList.remove("bg-red-600");
+      pinnedBtn = null;
+      showToast("Unpinned " + name);
+    } else {
+      btn.classList.add("bg-red-600");
+      pinnedBtn = btn;
+      showToast("Pinned " + name);
+    }
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById("toast");
+    toast.innerText = message;
+    toast.classList.remove("hidden");
+
+    setTimeout(() => {
+      toast.classList.add("hidden");
+    }, 2000);
+  }
+</script>
+
+</body>
+</html>

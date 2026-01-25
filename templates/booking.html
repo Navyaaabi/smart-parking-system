@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Parking Slot</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="font-[Poppins] bg-gradient-to-br from-gray-900 via-blue-900 to-gray-800 text-white min-h-screen">
+
+<!-- BACK BUTTON -->
+<a href="javascript:history.back()"
+   class="fixed top-6 left-6 bg-white text-blue-700 px-4 py-2 rounded-xl shadow hover:scale-105 transition font-semibold z-50">
+  ← Back
+</a>
+
+<!-- HEADER -->
+<header class="bg-blue-700 text-center py-6 shadow">
+  <h1 class="text-3xl font-bold">Online Reservation</h1>
+  <p class="text-sm opacity-90">Select your parking slot</p>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-6xl mx-auto px-4 py-10">
+
+<form action="{{ url_for('book') }}" method="POST" id="bookingForm">
+
+  <!-- Hidden Inputs -->
+  <input type="hidden" name="slot" id="slotInput">
+  <input type="hidden" name="subslot" id="subSlotInput">
+
+  <!-- SLOT SELECTION -->
+  <section>
+    <h2 class="text-xl font-bold mb-4">🚗 Choose Parking Area</h2>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+      <button type="button" onclick="selectSlot('P1', this)" class="slot-btn">P1</button>
+      <button type="button" onclick="selectSlot('P2', this)" class="slot-btn">P2</button>
+      <button type="button" onclick="selectSlot('P3', this)" class="slot-btn">P3</button>
+      <button type="button" onclick="selectSlot('P4', this)" class="slot-btn">P4</button>
+      <button type="button" onclick="selectSlot('P5', this)" class="slot-btn">P5</button>
+    </div>
+  </section>
+
+  <!-- SUB SLOTS -->
+  <section id="subSlotsSection" class="hidden mt-10">
+    <h2 class="text-xl font-bold mb-4">
+      📍 Available Slots in <span id="selectedSlotText" class="text-green-400"></span>
+    </h2>
+
+    <div id="subSlotsGrid"
+         class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+    </div>
+  </section>
+
+  <!-- TIME -->
+  <section id="timeSection" class="hidden mt-10">
+    <h2 class="text-xl font-bold mb-4">⏰ Select Start Time</h2>
+
+    <input type="time" name="time" id="timeInput"
+           class="text-black px-4 py-2 rounded-lg w-48" required>
+
+    <div class="mt-4">
+      <button type="button" onclick="showPayment()"
+              class="bg-green-600 hover:bg-green-700 px-6 py-2 rounded-xl font-bold transition">
+        Proceed
+      </button>
+    </div>
+  </section>
+
+  <!-- PAYMENT -->
+  <section id="paymentSection" class="hidden mt-10">
+    <h2 class="text-xl font-bold mb-4">💳 Payment</h2>
+
+    <a href="{{ url_for('qr') }}">
+      <button type="submit"
+              class="bg-yellow-500 hover:bg-yellow-600 text-black px-8 py-3 rounded-xl font-bold transition">
+        Proceed to Payment
+      </button>
+    </a>
+  </section>
+
+</form>
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-blue-700 text-center py-4 mt-10">
+  © 2026 Smart Parking System
+</footer>
+
+<!-- STYLES -->
+<style>
+  .slot-btn {
+    background: #1e40af;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  .slot-btn:hover { background: #2563eb; }
+  .slot-selected { background: #22c55e !important; }
+
+  .subslot-btn {
+    background: #dc2626;
+    padding: 10px;
+    border-radius: 10px;
+    transition: 0.3s;
+  }
+  .subslot-btn:hover { background: #16a34a; }
+  .subslot-selected { background: #16a34a !important; }
+</style>
+
+<!-- DOM SCRIPT -->
+<script>
+  let selectedSlotBtn = null;
+  let selectedSubSlotBtn = null;
+
+  const subSlotsGrid = document.getElementById("subSlotsGrid");
+
+  // Generate sub slots dynamically
+  for (let i = 1; i <= 20; i++) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.innerText = "Slot " + i;
+    btn.className = "subslot-btn";
+    btn.onclick = () => selectSubSlot(i, btn);
+    subSlotsGrid.appendChild(btn);
+  }
+
+  function selectSlot(slot, btn) {
+    if (selectedSlotBtn) selectedSlotBtn.classList.remove("slot-selected");
+
+    btn.classList.add("slot-selected");
+    selectedSlotBtn = btn;
+
+    document.getElementById("slotInput").value = slot;
+    document.getElementById("selectedSlotText").innerText = slot;
+
+    document.getElementById("subSlotsSection").classList.remove("hidden");
+    document.getElementById("timeSection").classList.add("hidden");
+    document.getElementById("paymentSection").classList.add("hidden");
+  }
+
+  function selectSubSlot(num, btn) {
+    if (selectedSubSlotBtn) selectedSubSlotBtn.classList.remove("subslot-selected");
+
+    btn.classList.add("subslot-selected");
+    selectedSubSlotBtn = btn;
+
+    document.getElementById("subSlotInput").value = num;
+    document.getElementById("timeSection").classList.remove("hidden");
+    document.getElementById("paymentSection").classList.add("hidden");
+  }
+
+  function showPayment() {
+    const time = document.getElementById("timeInput").value;
+    if (!time) return alert("Please select time");
+
+    document.getElementById("paymentSection").classList.remove("hidden");
+  }
+</script>
+
+</body>
+</html>
