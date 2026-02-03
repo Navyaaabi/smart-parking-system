@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Parking Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+<div class="w-full max-w-md bg-white shadow-xl rounded-xl flex flex-col">
+    
+    <!-- Header -->
+    <div class="bg-blue-600 text-white text-center py-4 rounded-t-xl font-semibold">
+        🚗 Smart Parking Chatbot
+    </div>
+
+    <!-- Messages -->
+    <div id="messages" class="flex-1 p-4 space-y-2 overflow-y-auto text-sm">
+        <div class="text-gray-500 text-center">
+            Ask me about slots, charges, rush time, or admin 👋
+        </div>
+    </div>
+
+    <!-- Input -->
+    <div class="border-t p-3 flex gap-2">
+        <input 
+            id="userInput"
+            type="text"
+            placeholder="Type your message..."
+            class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            onkeydown="if(event.key==='Enter') sendMessage()"
+        />
+        <button 
+            onclick="sendMessage()"
+            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+        >
+            Send
+        </button>
+    </div>
+
+</div>
+
+<script>
+function sendMessage() {
+    const input = document.getElementById("userInput");
+    const message = input.value.trim();
+    if (!message) return;
+
+    const messages = document.getElementById("messages");
+
+    // show user message
+    messages.innerHTML += `
+        <div class="text-right">
+            <span class="inline-block bg-blue-600 text-white px-3 py-2 rounded-lg">
+                ${message}
+            </span>
+        </div>
+    `;
+
+    fetch("/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: message })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Bot response:", data);
+
+        messages.innerHTML += `
+            <div class="text-left">
+                <span class="inline-block bg-gray-200 text-gray-800 px-3 py-2 rounded-lg">
+                    ${data.reply}
+                </span>
+            </div>
+        `;
+        messages.scrollTop = messages.scrollHeight;
+    })
+    .catch(error => {
+        console.error("Fetch error:", error);
+        messages.innerHTML += `
+            <div class="text-left text-red-500">
+                ⚠️ Bot failed to respond
+            </div>
+        `;
+    });
+
+    input.value = "";
+}
+</script>
+
+
+</body>
+</html>
