@@ -1,6 +1,9 @@
-from flask import Flask, render_template, redirect, request, url_for
+from flask import Flask, render_template, redirect, request, url_for,jsonify
 from flask_mysqldb import MySQL
 from datetime import datetime, timedelta
+from genai_helper import ai_reply
+from intent import detect_intent
+
 
 app = Flask(__name__)
 app.secret_key = "myapp"
@@ -36,8 +39,7 @@ def data():
 
     cur = mysql.connection.cursor()
     cur.execute(
-        "INSERT INTO message(name,email,mess) VALUES (%s,%s,%s)",
-        (name, email, message)
+        "INSERT INTO message(name,email,mess) VALUES (%s,%s,%s)",(name, email, message)
     )
     mysql.connection.commit()
     cur.close()
@@ -197,6 +199,61 @@ def fetch_alerts():
             )
 
     return alerts
+
+@app.route("/chat-ui")
+def chat_ui():
+    return render_template("chat.html")
+
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    try:
+        data = request.get_json()
+        message = data.get("message", "").strip()
+
+        if not message:
+            return jsonify({"reply": "⚠️ Please type something."})
+
+        cur = mysql.connection.cursor()
+
+        # ---- LIVE DATA ----
+        cur.execute("SELECT COUNT(*) FROM book")
+        booked = cur.fetchone()[0]
+        total_slots = 100
+        available = total_slots - booked
+
+        hour = datetime.now().hour
+        rush = "High" if (9 <= hour <= 11 or 16 <= hour <= 18) else "Low"
+
+        charges = "₹20 per hour"
+        admin = "Parking is managed by the Admin Office."
+
+        cur.close()
+
+        # ---- SMART CONTEXT ----
+        context = f"""
+Live Parking Information:
+- Available slots: {available}
+- Total slots: {total_slots}
+- Parking charges: {charges}
+- Current rush level: {rush}
+- Admin info: {admin}
+
+Rules:
+- Answer naturally like a real assistant
+- If the question is unrelated, politely guide the user
+- Do not mention internal system data unless needed
+"""
+
+        reply = ai_reply(context, message)
+
+        print(f"[GEMINI][DYNAMIC] User: {message} | Reply: {reply}")
+
+        return jsonify({"reply": reply})
+
+    except Exception as e:
+        print("SERVER ERROR:", e)
+        return jsonify({"reply": "⚠️ Server error. Please try again."})
 
 # ---------------- RUN ----------------
 if __name__ == '__main__':
