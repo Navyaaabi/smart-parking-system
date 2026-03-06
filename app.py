@@ -8,7 +8,6 @@ from intent import detect_intent
 app = Flask(__name__)
 app.secret_key = "myapp"
 
-# ---------------- MYSQL CONFIG ----------------
 app.config['MYSQL_HOST'] = "localhost"
 app.config['MYSQL_USER'] = "root"
 app.config['MYSQL_PASSWORD'] = "Kgkite@123"
@@ -16,7 +15,6 @@ app.config['MYSQL_DB'] = "parking"
 
 mysql = MySQL(app)
 
-# ---------------- HOME ----------------
 @app.route('/')
 def start():
     alerts = fetch_alerts()
@@ -26,7 +24,6 @@ def start():
 def home():
     return render_template("index.html")
 
-# ---------------- CONTACT ----------------
 @app.route('/contact')
 def contact():
     return render_template("contact.html")
@@ -46,10 +43,9 @@ def data():
 
     return redirect(url_for('home'))
 
-# ---------------- AUTH ----------------
 @app.route('/login')
 def login():
-    return render_template("login.html")   # renamed from "sign up.html"
+    return render_template("login.html")   
 
 @app.route('/signin', methods=['POST'])
 def signin():
@@ -86,7 +82,6 @@ def signup():
 
     return redirect(url_for("home"))
 
-# ---------------- PLACES ----------------
 @app.route('/places')
 def places():
     return render_template("places.html")
@@ -115,7 +110,6 @@ def kmch():
 def psg():
     return render_template("booking.html", location="PSG Hospital")
 
-# ---------------- BOOKING ----------------
 @app.route('/book', methods=['POST'])
 def book():
     slot = request.form['slot']
@@ -132,12 +126,10 @@ def book():
 
     return redirect(url_for("qr"))
 
-# ---------------- QR ----------------
 @app.route('/qr')
 def qr():
     return render_template("qr.html")
 
-# ---------------- ENTRY / EXIT ----------------
 @app.route('/entryexit')
 def entryexit():
     cur = mysql.connection.cursor()
@@ -180,7 +172,6 @@ def exit():
 
     return redirect('/entryexit')
 
-# ---------------- ALERT SYSTEM ----------------
 def fetch_alerts():
     alerts = []
     cur = mysql.connection.cursor()
@@ -216,7 +207,6 @@ def chat():
 
         cur = mysql.connection.cursor()
 
-        # ---- LIVE DATA ----
         cur.execute("SELECT COUNT(*) FROM book")
         booked = cur.fetchone()[0]
         total_slots = 100
@@ -230,7 +220,6 @@ def chat():
 
         cur.close()
 
-        # ---- SMART CONTEXT ----
         context = f"""
 Live Parking Information:
 - Available slots: {available}
@@ -255,6 +244,5 @@ Rules:
         print("SERVER ERROR:", e)
         return jsonify({"reply": "⚠️ Server error. Please try again."})
 
-# ---------------- RUN ----------------
 if __name__ == '__main__':
     app.run(debug=True)

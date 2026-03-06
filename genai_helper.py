@@ -2,13 +2,10 @@ from dotenv import load_dotenv
 import os
 from google import genai
 
-# Load .env file
 load_dotenv()
 
-# Debug check (optional)
 print("API KEY FOUND:", bool(os.getenv("GEMINI_API_KEY")))
 
-# Create Gemini client
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def ai_reply(context, user_message):
@@ -23,6 +20,9 @@ User Question:
 {user_message}
 
 Answer briefly and clearly.
+Avoid unwanted details. If the question is unrelated, politely guide the user back to parking-related topics.
+While Greeting only greet back and do not provide parking information. If the user asks for parking info, provide it based on the context above.
+if asked about high profile customers arrival time, tell integrated in future
 """
 
         response = client.models.generate_content(
