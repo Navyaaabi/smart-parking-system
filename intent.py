@@ -1,6 +1,9 @@
 def detect_intent(text: str):
     text = text.lower()
 
+    if "hello" in text or "hi" in text or "hey" in text:
+        return "GREETINGS"
+    
     if "slot" in text or "available" in text:
         return "SLOTS"
 

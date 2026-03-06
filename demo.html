@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Parking Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center justify-center">
+
+<h1 class="text-3xl font-bold mb-10">🚗 Smart Parking Live Status</h1>
+
+<div id="slotsContainer" class="grid grid-cols-6 gap-6"></div>
+
+<script>
+
+const container = document.getElementById("slotsContainer");
+
+// 🔥 STEP 1: Create 22 boxes
+for (let i = 1; i <= 22; i++) {
+
+    const box = document.createElement("div");
+    box.id = "slot" + i;
+
+    box.className =
+        "w-28 h-28 flex items-center justify-center rounded-xl text-lg font-bold bg-green-600 transition duration-300";
+
+    box.innerText = "SLOT " + i;
+
+    container.appendChild(box);
+}
+
+
+// 🔥 STEP 2: Update colors from backend every second
+setInterval(() => {
+
+    fetch("http://127.0.0.1:5000/status")
+        .then(response => response.json())
+        .then(data => {
+
+            for (let key in data) {
+
+                const box = document.getElementById(key);
+                if (!box) continue;
+
+                if (data[key] === true) {
+                    // Occupied → Red
+                    box.classList.remove("bg-green-600");
+                    box.classList.add("bg-red-600");
+                } else {
+                    // Free → Green
+                    box.classList.remove("bg-red-600");
+                    box.classList.add("bg-green-600");
+                }
+            }
+
+        })
+        .catch(error => console.log("Backend not connected"));
+
+}, 1000);
+
+</script>
+
+</body>
+</html>
